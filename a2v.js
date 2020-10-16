@@ -6,6 +6,9 @@ let audioBuff;
 audiofile.addEventListener("change", function () {
   file = this.files[0];
   let reader = new FileReader();
+  let graphkind = "time";
+  let graphselect = document.getElementById("graphselect");
+  graphkind = graphselect.options[graphselect.selectedIndex].value;
   reader.onload = function () {
     let arrBuffer = this.result;
     const audioCtx = new AudioContext();
@@ -13,7 +16,7 @@ audiofile.addEventListener("change", function () {
       audioBuff = audioBuffer;
       const source = this.createBufferSource();
       source.buffer = audioBuff;
-
+      
       //start analyze the audio
       /**
        * @type AudioContext
@@ -89,3 +92,9 @@ audiofile.addEventListener("change", function () {
   };
   reader.readAsArrayBuffer(file);
 });
+
+
+const resetButton = document.getElementById("resetbutton");
+resetButton.onclick = function(){
+    location.reload();
+};
