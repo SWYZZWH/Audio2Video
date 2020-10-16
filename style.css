@@ -1,0 +1,78 @@
+body{
+    background-color: #333;
+}
+#canvas{
+    border: 1px white solid;
+}
+.dropdown{
+    position: relative;
+    display: inline-block;
+}
+.dropdown-content{
+    display: none;
+    position: absolute;
+    min-width: 100px;
+    padding:5px 5px;
+}
+.dropdown:hover .dropdown-content{
+    display: block;
+}
+
+#startbutton{
+    background-color:#333 ;
+    color:black;
+    font-size: 20px;
+}
+
+.grid-container{
+    display: grid;
+    background-color: #333;
+    grid-template-columns: 7fr 3fr;
+    grid-template-rows:1fr 3fr 3fr 3fr 1fr;
+    justify-content: center;
+}
+
+.grid-item {
+    border: none !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-item-head{
+    background-color: #333;
+    align-content: center;
+    grid-area: 1 / 1 / 2 / 3;
+}
+
+.grid-item-head > p{
+    text-align: center;
+    color:white;
+    font-size: 50px;
+    font-family: sans-serif;
+}
+
+.grid-item-left{
+    grid-area: 2 / 1 / 5 / 2;
+    background-color: #333;
+}
+.grid-item-right1{
+    grid-area: 2/ 2 / 3 / 3 ;
+    background-color: #333;
+    border: 3px solid;
+}
+.grid-item-right2{
+    grid-area: 3/ 2 / 4 / 3 ;
+    background-color: #333;
+    border: 3px solid;
+}
+.grid-item-right3{
+    grid-area: 4/ 2 / 5 / 3 ;
+    background-color: #333;
+    border: 3px solid;
+}
+.grid-item-tail{
+    grid-area: 5/ 1 / 6 / 3 ;
+    background-color: #333;
+    border: 3px solid;
+}
