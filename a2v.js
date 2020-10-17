@@ -4,26 +4,37 @@ let file;
 let audioBuff;
 
 audiofile.addEventListener("change", function () {
+  //get upload audio file
   file = this.files[0];
   let reader = new FileReader();
+
+  //record user's chocie
   let graphkind = "time";
   let graphselect = document.getElementById("graphselect");
   graphkind = graphselect.options[graphselect.selectedIndex].value;
+
+  //when the audio file is loaded, trigger
   reader.onload = function () {
     let arrBuffer = this.result;
     const audioCtx = new AudioContext();
+    //decode the arrBuffer to audioBuffer
     audioCtx.decodeAudioData(arrBuffer, function (audioBuffer) {
-      audioBuff = audioBuffer;
+      //audioBuff = audioBuffer;
       const source = this.createBufferSource();
-      source.buffer = audioBuff;
+      source.buffer = audioBuffer;
       
-      //start analyze the audio
+      //build and set analyser
       /**
        * @type AudioContext
        */
       const analyser = audioCtx.createAnalyser();
       analyser.fftSize = 256;
       const bufferLen = analyser.frequencyBinCount;
+
+      //connect everything
+      source.connect(analyser);
+      //play audio using speaker
+      analyser.connect(audioCtx.destination);
 
       //save last 60 frames message
       const cacheSize = 240;
@@ -33,16 +44,13 @@ audiofile.addEventListener("change", function () {
         cache[i].fill(128.0);
       }
 
-      //connect everything
-      //analyser.getByteTimeDomainData(dataArray);
-      source.connect(analyser);
-      analyser.connect(audioCtx.destination);
-
+      //build canvas
       /**
        * @type HTMLCanvasElement
        */
       const canvas = document.getElementById("canvas");
       const canvasCtx = canvas.getContext("2d");
+
 
       function drawWave() {
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
@@ -55,7 +63,6 @@ audiofile.addEventListener("change", function () {
         cache.shift();
         cache.push(dataArray);
 
-        //draw waveframes
         canvasCtx.lineWidth = 2;
         canvasCtx.strokeStyle = "rgb(255,255,255)";
 
@@ -63,10 +70,6 @@ audiofile.addEventListener("change", function () {
         const sliceWidth = (canvas.width * 1.0) / (bufferLen * cacheSize);
         let x = 0;
 
-        //draw a line for every xxx points
-
-        //const smooth = 10;
-        //let sumSmooth = 0;
         for (let i = 0; i < cacheSize ; i++) {
           for(let j = 0; j < bufferLen; j++){
             let y = ((cache[i][j] / 256.0) * canvas.height) / 2.0 + canvas.height / 4;
@@ -78,16 +81,12 @@ audiofile.addEventListener("change", function () {
             x += sliceWidth;
           }
         }
-
         canvasCtx.lineTo(canvas.width, canvas.height / 2);
         canvasCtx.stroke();
       }
 
       function drawBar(){
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-        canvasCtx.fillStyle = "rgb(51,51,51)";
-        //canvasCtx.globalAlpha = 0.0;
-        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
         requestAnimationFrame(drawBar);
         const dataArray = new Uint8Array(bufferLen);
         analyser.getByteFrequencyData(dataArray);
@@ -97,14 +96,14 @@ audiofile.addEventListener("change", function () {
           let y = dataArray[i];
           canvasCtx.strokeStyle = "#ffffff";
           ctx.lineWidth = 3;
-          //canvasCtx.fillStyle = "rgb(255,255,255)";
-          //canvasCtx.fillRect(x, canvas.height - y, x+barWidth*0.98, canvas.height)
           canvasCtx.strokeRect(x, canvas.height - y, barWidth*0.8, canvas.height);
-          x += barWidth ;
+          x += barWidth;
         }
       }
 
+      //start point
       source.start();
+      //draw different graphs according to user's choice
       if(graphkind == "time")
         drawWave();
       else
