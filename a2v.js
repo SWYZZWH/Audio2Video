@@ -24,7 +24,6 @@ audiofile.addEventListener("change", function () {
       const analyser = audioCtx.createAnalyser();
       analyser.fftSize = 256;
       const bufferLen = analyser.frequencyBinCount;
-      //const dataArray = new Uint8Array(bufferLen);
 
       //save last 60 frames message
       const cacheSize = 240;
@@ -45,18 +44,16 @@ audiofile.addEventListener("change", function () {
       const canvas = document.getElementById("canvas");
       const canvasCtx = canvas.getContext("2d");
 
-      function draw() {
+      function drawWave() {
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
         //notice the browser to call draw function before drawing next frame
-        requestAnimationFrame(draw);
+        requestAnimationFrame(drawWave);
 
         const dataArray = new Uint8Array(bufferLen);
         //acquire decode message for current frame
         analyser.getByteTimeDomainData(dataArray);
         cache.shift();
         cache.push(dataArray);
-
-        canvasCtx.fillStyle = "rgb(200,200,200)";
 
         //draw waveframes
         canvasCtx.lineWidth = 2;
@@ -86,8 +83,31 @@ audiofile.addEventListener("change", function () {
         canvasCtx.stroke();
       }
 
+      function drawBar(){
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+        canvasCtx.fillStyle = "rgb(51,51,51)";
+        canvasCtx.globalAlpha = 0.0;
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+        requestAnimationFrame(drawBar);
+        const dataArray = new Uint8Array(bufferLen);
+        analyser.getByteFrequencyData(dataArray);
+        const barWidth = canvas.width / bufferLen /2;
+        let x = 0;
+        for(let i = 0 ; i < bufferLen; i++){
+          let y = dataArray[i];
+          canvasCtx.stokeStyle = "rgb(255,255,255)";
+          //canvasCtx.globalAlpha = 1 - barWidth / canvas.width;
+          canvasCtx.Rect(x, canvas.height - y, x+barWidth*0.98, canvas.height);
+          canvasCtx.stroke();
+          x+=barWidth;
+        }
+      }
+
       source.start();
-      draw();
+      if(graphkind == "time")
+        drawWave();
+      else
+        drawBar();
     });
   };
   reader.readAsArrayBuffer(file);
