@@ -86,20 +86,21 @@ audiofile.addEventListener("change", function () {
       function drawBar(){
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
         canvasCtx.fillStyle = "rgb(51,51,51)";
-        canvasCtx.globalAlpha = 0.0;
+        //canvasCtx.globalAlpha = 0.0;
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
         requestAnimationFrame(drawBar);
         const dataArray = new Uint8Array(bufferLen);
         analyser.getByteFrequencyData(dataArray);
-        const barWidth = canvas.width / bufferLen /2;
+        const barWidth = canvas.width / bufferLen * 3;
         let x = 0;
         for(let i = 0 ; i < bufferLen; i++){
           let y = dataArray[i];
-          canvasCtx.stokeStyle = "rgb(255,255,255)";
-          //canvasCtx.globalAlpha = 1 - barWidth / canvas.width;
-          canvasCtx.Rect(x, canvas.height - y, x+barWidth*0.98, canvas.height);
-          canvasCtx.stroke();
-          x+=barWidth;
+          canvasCtx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 3;
+          //canvasCtx.fillStyle = "rgb(255,255,255)";
+          //canvasCtx.fillRect(x, canvas.height - y, x+barWidth*0.98, canvas.height)
+          canvasCtx.strokeRect(x, canvas.height - y, barWidth*0.8, canvas.height);
+          x += barWidth ;
         }
       }
 

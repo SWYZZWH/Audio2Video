@@ -49,6 +49,7 @@ body{
 .grid-item-left{
     grid-area: 2 / 1 / 5 / 2;
     background-color: #333;
+    padding-left:3cm;
 }
 .grid-item-right1{
     grid-area: 2/ 2 / 3 / 3 ;
